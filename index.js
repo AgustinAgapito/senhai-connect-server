@@ -4,6 +4,10 @@ const cors = require('cors');
 const socket = require('socket.io');
 const YouTube = require("youtube-sr").default;
 const router = require('./router')
+const http = require('http')
+
+const server = http.createServer(app);
+const io = socket(server, { cors: { origin: '*' } });
 
 app.use(cors())
 app.use(express.json())
@@ -11,13 +15,13 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(router)
 
-const server = app.listen('4000', () => {
-    console.log('Listening to port 4000');
-})
+// const server = app.listen('4000', () => {
+//     console.log('Listening to port 4000');
+// })
 
 const allowedOrigins = "http://localhost:*"
 
-io = socket(server, { cors: { origin: '*' } })
+// io = socket(server, { cors: { origin: '*' } })
 
 io.on('connection', (socket) => {
     // console.log(socket.id)
@@ -63,4 +67,8 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log("disconnect")
     })
+})
+
+server.listen('4000', () => {
+    console.log('Listening to port 4000');
 })

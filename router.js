@@ -1,5 +1,6 @@
-  const express = require("express");
+const express = require("express");
 const router = express.Router();
+const YouTube = require("youtube-sr").default;
 
 router.get("/", (req, res) => {
   res.send({ response: "Server is up and running." }).status(200);
