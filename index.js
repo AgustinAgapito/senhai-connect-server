@@ -26,17 +26,21 @@ const allowedOrigins = "http://localhost:*"
 // io = socket(server, { cors: { origin: '*' } })
 
 io.on('connection', (socket) => {
-    // console.log(socket.id)
+    // console.log(socket.client)
 
     socket.on("join_room", (data) => {
         socket.join(data)
-        console.log(data)
+        // return all Socket instances
+        // const sockets = await io.in(data).fetchSockets();
+        // console.log(io.sockets.clients(data).length)
     })
+
+    // console.log(socket.rooms)
 
     // plays a new video
     socket.on("play_video", (data) => {
         // console.log({url: data})
-        socket.to(data.room).emit("url", data.url)
+        socket.to(data.room).emit("url", data)
     })
 
     // pause and play 
@@ -68,7 +72,6 @@ io.on('connection', (socket) => {
     // leave room
     socket.on('leave_room', (roomId) => {
         socket.leave(roomId)
-        
     })
 
     socket.on('disconnect', () => {
