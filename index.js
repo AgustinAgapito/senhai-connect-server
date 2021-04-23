@@ -65,6 +65,11 @@ io.on('connection', (socket) => {
         socket.to(data.room).emit("receive_seek_time", data.seek)
     })
 
+    // leave room
+    socket.on('leave_room', (roomId) => {
+        socket.leave(roomId)
+        
+    })
 
     socket.on('disconnect', () => {
         console.log("disconnect")
