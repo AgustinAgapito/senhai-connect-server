@@ -21,6 +21,10 @@ app.post("/search", (req, res) => {
 
 })
 
+app.get('/try', (req,res) => {
+    return res.json({"asdf": "adsfsdf"})
+})
+
 const server = app.listen('4000', () => {
     console.log('Listening to port 4000');
 })
@@ -42,11 +46,13 @@ io.on('connection', (socket) => {
         // console.log({url: data})
         socket.to(data.room).emit("url", data.url)
     })
+
     // pause and play 
     socket.on("player_state", (data) => {
         console.log({ "player_state": data})
         socket.to(data.room).emit("receive_player_state", data.playerState);
     })
+
     // video buffering
     socket.on("buffer_state", (data) => {
         console.log({ "buffer" : data })
