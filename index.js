@@ -3,27 +3,13 @@ const app = express();
 const cors = require('cors');
 const socket = require('socket.io');
 const YouTube = require("youtube-sr").default;
+const router = require('./router')
 
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
 
-app.post("/search", (req, res) => {
-    const { query } = req.body
-
-    YouTube.search( query )
-    .then( x => {
-        return res.json({ success: true, result: x });
-    })
-    .catch( err => {
-        return res.status(404).json({ success: false, err: err })
-    });
-
-})
-
-app.get('/try', (req,res) => {
-    return res.json({"asdf": "adsfsdf"})
-})
+app.use(router)
 
 const server = app.listen('4000', () => {
     console.log('Listening to port 4000');
