@@ -69,7 +69,7 @@ io.on('connection', (socket) => {
     })
 })
 
-server.listen('4000', () => {
+server.listen(4000, () => {
     console.log('Listening to port 4000');
 })
 
