@@ -6,6 +6,8 @@ const http = require('http')
 
 const app = express();
 
+var port = process.env.PORT || 4000;
+
 const server = http.createServer(app);
 const io = socket(server, { cors: { origin: '*' } });
 
@@ -69,7 +71,7 @@ io.on('connection', (socket) => {
     })
 })
 
-server.listen(4000, () => {
+server.listen(port, () => {
     console.log('Listening to port 4000');
 })
 
