@@ -62,6 +62,11 @@ io.on('connection', (socket) => {
         socket.to(data.room).emit("url", data)
     })
 
+    // direct link
+    socket.on("direct_link", (data) => {
+        socket.to(data.room).emit("direct_url", data)
+    })
+
     // pause and play 
     socket.on("player_state", (data) => {
         console.log({ "player_state": data})
