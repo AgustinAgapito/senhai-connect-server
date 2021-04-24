@@ -25,18 +25,41 @@ const allowedOrigins = "http://localhost:*"
 
 // io = socket(server, { cors: { origin: '*' } })
 
+const users = []
+
 io.on('connection', (socket) => {
     // console.log(socket.client)
 
     socket.on("join_room", (data) => {
-        socket.join(data)
+        const { room, username } =  data;
+        // const userExist = users.find( i => i.user === username )
+        // if (userExist) {
+
+        // }
+        const newUser = { 
+            room: room, 
+            user: username
+            // userID: socket.id 
+        }
+
+        users.push(newUser)
+        socket.join(room)
+        socket.to(room).emit("user_joined", {
+            notif: `${username} has joined the room`
+        })
         // return all Socket instances
         // const sockets = await io.in(data).fetchSockets();
         // console.log(io.sockets.clients(data).length)
     })
 
-    // console.log(socket.rooms)
+    socket.on("total_user", (room) => {
+        const total_user = users.filter( i => i.room === room)
+        socket.to(room).emit("get_total_user", total_user )
+    })
 
+    console.log(users)
+    // let userId = socket.id; // GET USER ID
+    // console.log(userId)
     // plays a new video
     socket.on("play_video", (data) => {
         // console.log({url: data})
@@ -70,8 +93,15 @@ io.on('connection', (socket) => {
     })
 
     // leave room
-    socket.on('leave_room', (roomId) => {
-        socket.leave(roomId)
+    socket.on('leave_room', ({ room, user }) => {
+        // const user_room = users.filter( i => i.room === rooom )
+        users.filter( i => i.user != user )
+        // if (deleted_users.length !== 0) users.push(deleted_users)
+        socket.leave(room)
+        socket.to(room).emit("user_left", {
+            notif: `${user} has left the room.`
+        })
+
     })
 
     socket.on('disconnect', () => {
