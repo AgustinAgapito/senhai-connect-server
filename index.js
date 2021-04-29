@@ -3,19 +3,24 @@ const cors = require('cors');
 const socket = require('socket.io');
 const router = require('./router')
 const http = require('http')
-const { addUser, getRoomUsers, deleteUser } = require('./Users')
+const { addUser, getRoomUsers, deleteUser, storeVideoUrl, getUrl } = require('./Users')
 const app = express();
 const ss = require('socket.io-stream');
 const path = require('path')
+const fs = require('fs')
 
 var port = process.env.PORT || 4000;
 
 const server = http.createServer(app);
-const io = socket(server, { cors: { origin: '*' } });
+const io = socket(server, { 
+    cors: { origin: '*' },
+    maxHttpBufferSize: 10e8
+});
 
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
+// app.use(express.static(__dirname));
 
 app.use(router)
 
@@ -34,18 +39,31 @@ io.on('connection', (socket) => {
         addUser(data.room, data.username)
         const total_user = getRoomUsers(data.room)
         console.log("total user", total_user)
-
+        console.log("get url",getUrl())
         socket.join(data.room)
+        
         socket.to(data.room).emit("user_joined", {
             notif: `${data.username} has joined the room`
         })
 
     })
 
-    ss(socket).on("image" , (data) => {
-        const file = path.basename(data.img)
-        
-        socket.to(data.room).emit("get_image", data.img)
+    socket.on("image" , (data) => {
+        console.log("img")
+        socket.to(data.room).emit("get_image", data)
+        // const file = path.basename(data.img)
+        // const writer = fs.createWriteStream(path.resolve(__dirname, './tmp/' + data.name), {
+        //     encoding: 'base64'
+        // })
+        // writer.write(data.data)
+        // writer.end()
+        // console.log("image", data.name)
+        // writer.on('finish', () => {
+        //     socket.to(data.room).emit("get_image", {
+        //         name: '/tmp/' + data.name,
+        //         data: data.data
+        //     } )
+        // })
     })
 
     // get all user inside room
@@ -58,13 +76,15 @@ io.on('connection', (socket) => {
 
     // plays a new video
     socket.on("play_video", (data) => {
-        console.log({url: data})
-        socket.to(data.room).emit("url", data)
+        const url = storeVideoUrl(data)
+        // console.log("from socket", url)
+        socket.to(data.room).emit("url", getUrl())
     })
 
     // direct link
     socket.on("direct_link", (data) => {
-        socket.to(data.room).emit("direct_url", data)
+        const url = storeVideoUrl(data)
+        socket.to(data.room).emit("direct_url", url)
     })
 
     // pause and play 

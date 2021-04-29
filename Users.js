@@ -1,4 +1,5 @@
 const users = []
+let videoUrl ;
 
 const addUser = (room, username) => {
     console.log("addUser",username)
@@ -14,6 +15,16 @@ const addUser = (room, username) => {
     return users
 }
 
+const storeVideoUrl = (url) => {
+    // const { url, title } = url
+    videoUrl = url
+    return videoUrl
+}
+
+const getUrl = () => {
+    return videoUrl
+}
+
 const getRoomUsers = (room) => {
     let user = users.filter( i => i.room === room )
     return user
@@ -27,4 +38,4 @@ const deleteUser = (user) => {
 }
 
 
-module.exports = { addUser, getRoomUsers, deleteUser }
+module.exports = { addUser, getRoomUsers, deleteUser, storeVideoUrl, getUrl }
