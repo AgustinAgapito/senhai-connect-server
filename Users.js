@@ -1,4 +1,5 @@
-const users = []
+let users = []
+const playlist = []
 let videoUrl ;
 
 const addUser = (room, username) => {
@@ -15,9 +16,22 @@ const addUser = (room, username) => {
     return users
 }
 
-const storeVideoUrl = (url) => {
-    // const { url, title } = url
-    videoUrl = url
+const storeVideoUrl = (data) => {
+    const { url, title, direct } = data
+    if (!direct) {
+        let newUrl = {
+            url: `${url}?rel=0&vq=360p`,
+            title: title
+        }
+        videoUrl = newUrl
+    } else {
+        let directUrl = {
+            url: url,
+            title: title
+        }
+        videoUrl = directUrl
+    }
+    // videoUrl = url
     return videoUrl
 }
 
@@ -31,10 +45,10 @@ const getRoomUsers = (room) => {
 }
 
 const deleteUser = (user) => {
-    let index = users.findIndex( i => i.user === user)
-    if (index !== -1) return users.splice(index, 1)[0];
-    // users = index
-    // return users
+    let index = users.filter( i => i.user !== user)
+    // if (index !== -1) return users.splice(index, 1)[0];
+    users = index
+    return users
 }
 
 

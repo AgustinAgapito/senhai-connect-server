@@ -14,7 +14,7 @@ var port = process.env.PORT || 4000;
 const server = http.createServer(app);
 const io = socket(server, { 
     cors: { origin: '*' },
-    maxHttpBufferSize: 10e8
+    maxHttpBufferSize: 80e8
 });
 
 app.use(cors())
@@ -45,7 +45,11 @@ io.on('connection', (socket) => {
         socket.to(data.room).emit("user_joined", {
             notif: `${data.username} has joined the room`
         })
+        // socket.to(data.room).emit("saved_url", getUrl())
+    })
 
+    socket.on("get_saved_url", (room) => {
+        socket.to(room).emit("receive_saved_url", getUrl())
     })
 
     socket.on("image" , (data) => {
@@ -78,7 +82,7 @@ io.on('connection', (socket) => {
     socket.on("play_video", (data) => {
         const url = storeVideoUrl(data)
         // console.log("from socket", url)
-        socket.to(data.room).emit("url", getUrl())
+        socket.to(data.room).emit("url", url)
     })
 
     // direct link
