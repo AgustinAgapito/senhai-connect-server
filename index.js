@@ -14,9 +14,10 @@ var port = process.env.PORT || 4000;
 const server = http.createServer(app);
 const io = socket(server, { 
     cors: { origin: '*' },
-    maxHttpBufferSize: 80e8
+    maxHttpBufferSize: 1e8
 });
-
+//1e8
+//80e8
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
@@ -33,56 +34,41 @@ const allowedOrigins = "http://localhost:*"
 // io = socket(server, { cors: { origin: '*' } })
 
 io.on('connection', (socket) => {
-    // console.log(socket.client)
+    // console.log(socket.handshake.address)
 
     socket.on("join_room", (data) => {
         addUser(data.room, data.username)
-        const total_user = getRoomUsers(data.room)
-        console.log("total user", total_user)
-        console.log("get url",getUrl())
         socket.join(data.room)
         
         socket.to(data.room).emit("user_joined", {
             notif: `${data.username} has joined the room`
         })
-        // socket.to(data.room).emit("saved_url", getUrl())
     })
 
     socket.on("get_saved_url", (room) => {
-        socket.to(room).emit("receive_saved_url", getUrl())
+        io.in(room).emit("receive_saved_url", getUrl())
     })
 
     socket.on("image" , (data) => {
-        console.log("img")
+        // console.log(data)
         socket.to(data.room).emit("get_image", data)
-        // const file = path.basename(data.img)
-        // const writer = fs.createWriteStream(path.resolve(__dirname, './tmp/' + data.name), {
-        //     encoding: 'base64'
-        // })
-        // writer.write(data.data)
-        // writer.end()
-        // console.log("image", data.name)
-        // writer.on('finish', () => {
-        //     socket.to(data.room).emit("get_image", {
-        //         name: '/tmp/' + data.name,
-        //         data: data.data
-        //     } )
-        // })
     })
 
     // get all user inside room
     socket.on("total_user", (room) => {
-        const total_user = getRoomUsers(room)
+        let total_user = getRoomUsers(room)
         console.log("total user", total_user)
-
-        socket.to(room).emit("get_total_user", total_user )
+        
+        io.in(room).emit("get_total_user", total_user )
+        // socket.to(room).emit("get_total_user", total_user )
     })
 
     // plays a new video
     socket.on("play_video", (data) => {
         const url = storeVideoUrl(data)
         // console.log("from socket", url)
-        socket.to(data.room).emit("url", url)
+        io.in(data.room).emit("url", url)
+        // socket.to(data.room).emit("url", url)
     })
 
     // direct link
@@ -94,7 +80,7 @@ io.on('connection', (socket) => {
     // pause and play 
     socket.on("player_state", (data) => {
         console.log({ "player_state": data})
-        socket.to(data.room).emit("receive_player_state", data.playerState);
+        io.in(data.room).emit("receive_player_state", data.playerState);
     })
 
     // video buffering
@@ -114,26 +100,26 @@ io.on('connection', (socket) => {
     // video seek
     socket.on("seek", (data) => {
         console.log({ "seek": data })
-        socket.to(data.room).emit("receive_seek_time", data.seek)
+        socket.to(data.room).emit("receive_seek_time", data)
     })
 
     // leave room
     socket.on('leave_room', (data) => {
         // const user_room = users.filter( i => i.room === rooom )
         // if (deleted_users.length !== 0) users.push(deleted_users)
-        const newarr = deleteUser(data.user)
-        console.log(newarr)
-
+        const newarr = deleteUser(data.username)
         socket.leave(data.room)
+
         socket.to(data.room).emit("user_left", {
-            notif: `${data.user} has left the room.`
+            notif: `${data.username} has left the room.`
         })
+        console.log("leave room",getRoomUsers(data.room))
 
     })
 
     socket.on('disconnect', () => {
         console.log("disconnect")
-
+        // name and file 
     })
 })
 

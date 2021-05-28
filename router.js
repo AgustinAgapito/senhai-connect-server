@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
 router.post("/search", (req, res) => {
     const { query } = req.body
 
-    YouTube.search( query )
+    YouTube.search( query , { limit: 20 } )
     .then( x => {
         return res.json({ success: true, result: x });
     })

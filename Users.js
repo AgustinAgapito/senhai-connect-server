@@ -3,11 +3,10 @@ const playlist = []
 let videoUrl ;
 
 const addUser = (room, username) => {
-    console.log("addUser",username)
-    const userExist = users.find( i => i.user === username )   
+    const userExist = users.find( i => i.username === username )   
     let newUser = {
         room: room,
-        user: username
+        username: username
     }
     if (!userExist) {
         users.push(newUser)
@@ -17,17 +16,26 @@ const addUser = (room, username) => {
 }
 
 const storeVideoUrl = (data) => {
-    const { url, title, direct } = data
+    const { url, title, direct, playedBy, icon, channel, uploadedAt, room } = data
     if (!direct) {
         let newUrl = {
             url: `${url}?rel=0&vq=360p`,
-            title: title
+            title: title,
+            playedBy: playedBy,
+            icon: icon,
+            channel: channel,
+            uploadedAt: uploadedAt,
+            room: room,
+            ytVideo: true
         }
         videoUrl = newUrl
     } else {
         let directUrl = {
             url: url,
-            title: title
+            title: title,
+            playedBy: `Played by: ${playedBy}`,
+            room: room,
+            ytVideo: false
         }
         videoUrl = directUrl
     }
@@ -40,12 +48,14 @@ const getUrl = () => {
 }
 
 const getRoomUsers = (room) => {
+    console.log("room name", room)
     let user = users.filter( i => i.room === room )
+    console.log("user ", user)
     return user
 }
 
-const deleteUser = (user) => {
-    let index = users.filter( i => i.user !== user)
+const deleteUser = (username) => {
+    let index = users.filter( i => i.username !== username)
     // if (index !== -1) return users.splice(index, 1)[0];
     users = index
     return users
