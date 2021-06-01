@@ -13,8 +13,14 @@ var port = process.env.PORT || 4000;
 
 const server = http.createServer(app);
 const io = socket(server, { 
-    cors: { origin: '*' },
-    maxHttpBufferSize: 1e8
+    cors: { 
+        origin: '*' ,
+        methods: ["GET", "POST"],
+        transports: ['websocket', 'polling'],
+        credentials: true
+    },
+    maxHttpBufferSize: 1e8,
+    allowEIO3: true
 });
 //1e8
 //80e8
