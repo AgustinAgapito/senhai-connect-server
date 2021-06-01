@@ -16,7 +16,7 @@ const addUser = (room, username) => {
 }
 
 const storeVideoUrl = (data) => {
-    const { url, title, direct, playedBy, icon, channel, uploadedAt, room } = data
+    const { url, title, direct, playedBy, icon, channel, uploadedAt, room, length } = data
     if (!direct) {
         let newUrl = {
             url: `${url}?rel=0&vq=360p`,
@@ -26,6 +26,8 @@ const storeVideoUrl = (data) => {
             channel: channel,
             uploadedAt: uploadedAt,
             room: room,
+            direct: false,
+            length: length,
             ytVideo: true
         }
         videoUrl = newUrl
@@ -33,8 +35,9 @@ const storeVideoUrl = (data) => {
         let directUrl = {
             url: url,
             title: title,
-            playedBy: `Played by: ${playedBy}`,
+            playedBy: playedBy,
             room: room,
+            direct: true,
             ytVideo: false
         }
         videoUrl = directUrl

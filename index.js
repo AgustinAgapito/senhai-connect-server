@@ -66,7 +66,7 @@ io.on('connection', (socket) => {
     // plays a new video
     socket.on("play_video", (data) => {
         const url = storeVideoUrl(data)
-        // console.log("from socket", url)
+        console.log("from socket", url)
         io.in(data.room).emit("url", url)
         // socket.to(data.room).emit("url", url)
     })
@@ -100,7 +100,7 @@ io.on('connection', (socket) => {
     // video seek
     socket.on("seek", (data) => {
         console.log({ "seek": data })
-        socket.to(data.room).emit("receive_seek_time", data)
+        io.in(data.room).emit("receive_seek_time", data)
     })
 
     // leave room
