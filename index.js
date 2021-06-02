@@ -16,8 +16,7 @@ const io = socket(server, {
     cors: { 
         origin: '*' ,
         methods: ["GET", "POST"],
-        transports: ['websocket', 'polling'],
-        credentials: true
+        transports: ['websocket', 'polling']
     },
     maxHttpBufferSize: 1e8,
     allowEIO3: true
@@ -52,7 +51,8 @@ io.on('connection', (socket) => {
     })
 
     socket.on("get_saved_url", (room) => {
-        io.in(room).emit("receive_saved_url", getUrl())
+        const savedUrl = getUrl(room)
+        io.in(room).emit("receive_saved_url", savedUrl)
     })
 
     socket.on("image" , (data) => {
