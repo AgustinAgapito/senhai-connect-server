@@ -46,7 +46,7 @@ const storeVideoUrl = (data) => {
     return videoUrl
 }
 
-const getUrl = () => {
+const getUrl = (room) => {
     return videoUrl
 }
 
