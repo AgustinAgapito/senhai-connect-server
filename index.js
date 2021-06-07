@@ -16,11 +16,11 @@ const io = socket(server, {
     cors: { 
         origin: '*' ,
         methods: ["GET", "POST"],
-        transports: ['websocket', 'polling']
+        transports: ['websocket']
     },
     maxHttpBufferSize: 80e8,
     allowEIO3: true,
-
+    upgrade: false
 });
 //1e8
 //80e8
