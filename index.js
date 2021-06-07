@@ -18,8 +18,9 @@ const io = socket(server, {
         methods: ["GET", "POST"],
         transports: ['websocket', 'polling']
     },
-    maxHttpBufferSize: 1e8,
-    allowEIO3: true
+    maxHttpBufferSize: 80e8,
+    allowEIO3: true,
+
 });
 //1e8
 //80e8
