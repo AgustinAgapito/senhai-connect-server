@@ -23,7 +23,7 @@ const io = socket(server, {
 });
 //1e8
 //80e8
-app.use(cors())
+app.use(cors({ origin: '*' }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
 // app.use(express.static(__dirname));
