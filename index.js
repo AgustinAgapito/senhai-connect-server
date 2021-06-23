@@ -13,7 +13,7 @@ var port = process.env.PORT || 4000;
 const server = http.createServer(app);
 const io = socket(server, { 
     cors: { 
-        origin: '*' ,
+        origin: 'https://sh-connect.vercel.app' ,
         methods: ["GET", "POST"],
     },
     // maxHttpBufferSize: 80e8,
@@ -23,7 +23,20 @@ const io = socket(server, {
 });
 //1e8
 //80e8
-app.use(cors({ origin: '*' }))
+
+var whitelist = ['http://localhost:3000', 'https://sh-connect.vercel.app', 'https://sh-drama.netlify.app']
+var corsOptionsDelegate = function (req, callback) {
+  var corsOptions;
+  if (whitelist.indexOf(req.header('Origin')) !== -1) {
+    corsOptions = { origin: true } // reflect (enable) the requested origin in the CORS response
+  } else {
+    corsOptions = { origin: false } // disable CORS for this request
+  }
+  callback(null, corsOptions) // callback expects two parameters: error and options
+}
+
+
+app.use(cors(corsOptionsDelegate))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
 // app.use(express.static(__dirname));
